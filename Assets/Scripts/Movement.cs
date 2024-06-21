@@ -9,6 +9,7 @@ public class Movement : MonoBehaviour
     [Header("Movement")]
     [Tooltip("Speed of movement")]
     public float speed;
+
     public enum MovementType
     {
         AllDirections,
@@ -24,8 +25,6 @@ public class Movement : MonoBehaviour
     public bool platformSettings = false;
 
     private float masterSpeed;
-
-
 
 
     void Awake()
