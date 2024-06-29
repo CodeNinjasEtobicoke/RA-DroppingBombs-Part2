@@ -11,7 +11,12 @@ public class RocketAnimate : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        
     }
+
+  
+
+
 
     // Update is called once per frame
     void FixedUpdate()
@@ -20,4 +25,8 @@ public class RocketAnimate : MonoBehaviour
 
         animator.SetFloat("HAxis", horizontal);
     }
+
+    
+
+    
 }
