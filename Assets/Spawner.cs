@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    
+
     public GameObject bombPrefab;
     public float delay = 2.0f;
     public bool active = true;
     public Vector2 delayRange = new Vector2(1, 2);
 
-    private Vector2 screenBrounds;
+    private Vector2 screenBounds;
     private float objectWidth;
     private float objectHeight;
     private int test = 10; 
@@ -31,6 +33,9 @@ public class Spawner : MonoBehaviour
         yield return new WaitForSeconds(delay);
         if (active)
         {
+
+            float randomX = Random.Range(screenBounds.x - objectWidth, screenBounds.x * -1 + objectWidth);
+            float spawnY = (screenBounds.y + objectHeight) + 5;
 
             Instantiate(bombPrefab, new Vector3(randomX, spawnY, 0), bombPrefab.transform.rotation);
             ResetDelay();
