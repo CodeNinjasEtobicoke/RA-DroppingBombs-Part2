@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public GameObject playerPrefab;
     private GameObject player;
     private bool gameStarted = false;
+    public GameObject splash;
 
     private void Awake()
     {
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
     {
         spawner.active = false;
         title.SetActive(true);
+        splash.SetActive(false);
     }
 
 
@@ -34,17 +36,35 @@ public class GameManager : MonoBehaviour
         {
             if (Input.anyKeyDown)
             {
-                spawner.active = true;
-                title.SetActive(false);
+                ResetGame();
+                Debug.Log("j hfodbajksdana");
+            }
+        } else
+        {
+            if (!player)
+            {
+                OnPlayerKilled();
+                Debug.Log("e");
+
             }
         }
+
+        void OnPlayerKilled()
+        {
+            spawner.active = false;
+            gameStarted = false;
+
+            splash.SetActive(true);
+        }
+        
+
 
 
         var nextBomb = GameObject.FindGameObjectsWithTag("Bomb");
 
         foreach (GameObject bombObject in nextBomb)
         {
-            if (bombObject.transform.position.y < (-screenBounds.y) - 12)
+            if (bombObject.transform.position.y < (-screenBounds.y) - 12 || !gameStarted)
             {
                 Destroy(bombObject);
             }
@@ -55,7 +75,10 @@ public class GameManager : MonoBehaviour
     void ResetGame()
     {
         spawner.active = true;
-        title.SetActive
+        title.SetActive(false);
+        splash.SetActive(false);
+        player = Instantiate(playerPrefab, new Vector3(0, 0, 0), playerPrefab.transform.rotation);
+        gameStarted = true;
     }
 
 }
