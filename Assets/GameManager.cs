@@ -15,8 +15,18 @@ public class GameManager : MonoBehaviour
     public GameObject splash;
     public GameObject scoreSystem;
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI bestScoreText;
+
     public int pointsWorth = 1;
     private int score;
+
+
+    private bool smokeCleared = true;
+
+
+    private int bestScore = 0;
+
+    private bool beatBestScore;
 
     private void Awake()
     {
@@ -24,6 +34,7 @@ public class GameManager : MonoBehaviour
         screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
         player = playerPrefab;
         scoreText.enabled = false;
+        bestScoreText.enabled = false;
     }
 
     // Start is called before the first frame update
@@ -32,6 +43,9 @@ public class GameManager : MonoBehaviour
         spawner.active = false;
         title.SetActive(true);
         splash.SetActive(false);
+
+        bestScore = PlayerPrefs.GetInt("BestScore");
+        bestScoreText.text = "Best Score:" + bestScore.ToString();
     }
 
 
@@ -46,24 +60,18 @@ public class GameManager : MonoBehaviour
                 ResetGame();
                 Debug.Log("j hfodbajksdana");
             }
-        } else
+        }
+        else
         {
             if (!player)
             {
-                OnPlayerKilled();
+                Invoke("OnPlayerKilled", 1f);
+                //OnPlayerKilled();
                 Debug.Log("e");
 
             }
         }
 
-        void OnPlayerKilled()
-        {
-            spawner.active = false;
-            gameStarted = false;
-
-            splash.SetActive(true);
-        }
-        
 
 
 
@@ -74,14 +82,33 @@ public class GameManager : MonoBehaviour
             if (bombObject.transform.position.y < (-screenBounds.y) - 12 || !gameStarted)
             {
                 Destroy(bombObject);
-            }else if (bombObject.transform.position.y < (-screenBounds.y) && gameStarted)
+            }
+            else if (bombObject.transform.position.y < (-screenBounds.y) && gameStarted)
             {
                 scoreSystem.GetComponent<Score>().AddScore(pointsWorth);
                 Destroy(bombObject);
             }
         }
 
+        if (!gameStarted)
+        {
+            var textColor = "#323232";
+
+            if (beatBestScore)
+            {
+                textColor = "#F00";
+            }
+
+            bestScoreText.text = "<color=" + textColor + ">Best Score: " + bestScore.ToString() + "</color>";
+        }
+        else
+        {
+            bestScoreText.text = "";
+        }
     }
+
+
+
 
     void ResetGame()
     {
@@ -94,6 +121,31 @@ public class GameManager : MonoBehaviour
         scoreText.enabled = true;
         scoreSystem.GetComponent<Score>().score = 0;
         scoreSystem.GetComponent<Score>().Start();
+
+        beatBestScore = false;
+        bestScoreText.enabled = true;
     }
 
+    void OnPlayerKilled()
+    {
+        spawner.active = false;
+        gameStarted = false;
+
+        splash.SetActive(true);
+
+        score = scoreSystem.GetComponent<Score>().score;
+
+        if (score > bestScore)
+        {
+            bestScore = score;
+            PlayerPrefs.SetInt("BestScore", bestScore);
+            beatBestScore = true;
+            bestScoreText.text = "BestScore: " + bestScore.ToString();
+        }
+    }
 }
+
+
+    
+
+
